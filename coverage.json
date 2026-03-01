@@ -1,0 +1,37 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-03-01T17:04:58.403Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 1,
+    "implemented": 0,
+    "items": [
+      {
+        "id": "REQ-6",
+        "summary": "Add 25 JEE (Joint Entrance Examination) style multiple-choice questions to the backend quiz questions store. Each question must include: a question text, exactly 4 answer options (A, B, C, D), and the correct answer index. Cover topics typical of JEE preparation such as Physics (mechanics, optics, electromagnetism), Chemistry (organic, inorganic, physical chemistry), and Mathematics (algebra, calculus, coordinate geometry, trigonometry). Distribute questions across all three subjects (approximately 8-9 per subject).",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-implementation-plan.json",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "frontend/src/index.css": "Global styles with OKLCH color system, academic amber/teal theme, Google Fonts, and custom utility classes — fixed by replacing `@apply` opacity-modifier rules on custom color tokens with plain CSS `oklch()` alpha values to avoid Tailwind's `@apply` resolution limitation.",
+  "frontend/tailwind.config.js": "Extended Tailwind config with custom amber/teal color tokens, Space Grotesk/Nunito font families, enhanced border radii, glow box shadows, and fade/scale/pulse animations.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks for all backend operations — fetching questions, motivations, checking answers, and adding content, with proper cache invalidation.",
+  "frontend/src/App.tsx": "Main app entry with TanStack Router setup, defining routes for home, quiz, quiz results, and motivation pages, all wrapped in a shared Layout component.",
+  "frontend/src/components/Layout.tsx": "Shared layout wrapper with sticky header (logo + nav links), main content area, and footer with dynamic year and caffeine.ai attribution.",
+  "frontend/src/pages/Home.tsx": "Hero landing page with gradient background, EduTech Nova branding, hero image, two CTA buttons (Start Quiz / Get Motivated), and feature cards.",
+  "frontend/src/hooks/useQuiz.ts": "Custom hook managing quiz state — current question index, selected answer, correct/incorrect feedback, score tracking, navigation, and restart functionality.",
+  "frontend/src/pages/Quiz.tsx": "Quiz page that fetches questions from backend, displays one at a time with multiple-choice options, shows real-time correct/incorrect feedback, progress bar, and navigates to results on completion.",
+  "frontend/src/pages/QuizResults.tsx": "Results page showing animated score circle, percentage, correct/wrong counts, grade label, and buttons to retry or go home.",
+  "frontend/src/hooks/useMotivation.ts": "Custom hook managing motivation state — fetching random messages from backend, preventing consecutive repeats, and tracking loading/error states.",
+  "frontend/src/pages/Motivation.tsx": "Full-screen motivation page with decorative quote card, auto-fetches on mount, animated message display, and a \"New Motivation\" button with loading state.",
+  "frontend/src/lib/utils.ts": "Utility function `cn` combining clsx and tailwind-merge for conditional class name composition."
+}

@@ -1,0 +1,49 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-03-01T17:04:58.400Z",
+  "summary": "The diff adds a migration module (backend/migration.mo) with JEE-style questions and modifies backend/main.mo to use migration-based initialization. The main.mo initializes puzzles as an empty map and relies on Migration.run. The migration.mo content is truncated at question index 18, making it impossible to confirm all 25 questions are present. Questions are placed in a separate file rather than directly in main.mo as the constraint requires.",
+  "missing_requirements": [
+    {
+      "id": "REQ-6",
+      "requirement": "Exactly 25 new JEE-style questions are added to the backend questions store",
+      "reason": "The migration.mo file is truncated at question index 18. It is impossible to confirm all 25 questions are present and properly distributed across Physics, Chemistry, and Mathematics from the truncated diff.",
+      "evidence": [
+        "backend/migration.mo",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "requirement": "All questions must be added to the existing backend Motoko actor in backend/main.mo per the stated constraint",
+      "reason": "The constraint states all questions must be added to backend/main.mo. Instead, questions are placed in a separate migration.mo file. The main.mo puzzles store is initialized as empty (Map.empty) with questions only populated via the migration mechanism.",
+      "evidence": [
+        "backend/main.mo",
+        "backend/migration.mo"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "A migration module (backend/migration.mo) was created to handle data migration between actor versions",
+      "reason": "The build request only asked to add 25 questions to the existing backend actor in main.mo. Creating a separate migration infrastructure was not requested.",
+      "evidence": [
+        "backend/migration.mo",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "description": "A new public addQuestion API function was added to main.mo with a hard cap of 25 questions",
+      "reason": "The build request did not ask for a new public addQuestion function to be added to the actor API; it only asked for questions to be stored in the backend.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    }
+  ],
+  "confidence": 0.62,
+  "changed_files": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "project_state.json"
+  ]
+}

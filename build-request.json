@@ -1,0 +1,44 @@
+{
+  "kind": "build_request",
+  "title": "Add 25 JEE-style quiz questions to the backend",
+  "projectName": "EduTech Nova",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-6",
+      "text": "Add 25 JEE (Joint Entrance Examination) style multiple-choice questions to the backend quiz questions store. Each question must include: a question text, exactly 4 answer options (A, B, C, D), and the correct answer index. Cover topics typical of JEE preparation such as Physics (mechanics, optics, electromagnetism), Chemistry (organic, inorganic, physical chemistry), and Mathematics (algebra, calculus, coordinate geometry, trigonometry). Distribute questions across all three subjects (approximately 8-9 per subject).",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Quiz e jee r question with option and correct answers 25 ta moto add koro"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Exactly 25 new JEE-style questions are added to the backend questions store",
+        "Each question has a question text, exactly 4 answer options, and a designated correct answer",
+        "Questions span Physics, Chemistry, and Mathematics topics relevant to JEE preparation",
+        "The quiz frontend can load and display all 25 questions correctly",
+        "Answer validation works correctly for all 25 questions (correct answer is accepted, wrong answers are rejected)",
+        "Questions are distributed across the three JEE subjects"
+      ]
+    }
+  ],
+  "constraints": [
+    "All questions must be added to the existing backend Motoko actor in backend/main.mo",
+    "Do not break or change the existing quiz question data structure or API",
+    "Do not modify any frontend immutable paths"
+  ],
+  "nonGoals": [
+    "Changing the quiz UI or frontend quiz flow",
+    "Adding subject-filtering or category-based quiz selection",
+    "Adding difficulty levels or scoring weights",
+    "Modifying the motivational messages feature"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}
