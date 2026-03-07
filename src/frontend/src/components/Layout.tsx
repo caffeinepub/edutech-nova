@@ -1,5 +1,5 @@
 import { Link, useRouter } from "@tanstack/react-router";
-import { BookOpen, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
 import type { ReactNode } from "react";
 
 interface LayoutProps {
@@ -18,9 +18,11 @@ export default function Layout({ children }: LayoutProps) {
       <header className="sticky top-0 z-50 border-b border-border bg-card/80 backdrop-blur-md shadow-xs">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl gradient-amber flex items-center justify-center shadow-glow group-hover:scale-105 transition-transform">
-              <BookOpen className="w-5 h-5 text-white" />
-            </div>
+            <img
+              src="/assets/uploads/file_00000000c20072088a751f25cebbaf19-1.png"
+              alt="EduTech Nova Logo"
+              className="w-10 h-10 object-contain group-hover:scale-105 transition-transform drop-shadow-md"
+            />
             <span className="font-display font-bold text-xl tracking-tight text-foreground">
               EduTech <span className="text-amber">Nova</span>
             </span>
@@ -58,7 +60,11 @@ export default function Layout({ children }: LayoutProps) {
       <footer className="border-t border-border bg-card py-6">
         <div className="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted-foreground">
           <div className="flex items-center gap-1.5">
-            <BookOpen className="w-4 h-4 text-amber" />
+            <img
+              src="/assets/uploads/file_00000000c20072088a751f25cebbaf19-1.png"
+              alt="EduTech Nova Logo"
+              className="w-5 h-5 object-contain"
+            />
             <span className="font-semibold text-foreground">EduTech Nova</span>
             <span>© {new Date().getFullYear()}</span>
           </div>
