@@ -1,0 +1,199 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.75rem;
+
+    /* Backgrounds */
+    --background: 0.98 0.008 85;
+    --foreground: 0.18 0.04 260;
+
+    /* Card */
+    --card: 1 0 0;
+    --card-foreground: 0.18 0.04 260;
+
+    /* Popover */
+    --popover: 1 0 0;
+    --popover-foreground: 0.18 0.04 260;
+
+    /* Primary — deep amber */
+    --primary: 0.62 0.18 52;
+    --primary-foreground: 1 0 0;
+
+    /* Secondary — teal */
+    --secondary: 0.88 0.06 185;
+    --secondary-foreground: 0.22 0.08 185;
+
+    /* Muted */
+    --muted: 0.94 0.01 85;
+    --muted-foreground: 0.52 0.03 260;
+
+    /* Accent — bright amber */
+    --accent: 0.92 0.12 85;
+    --accent-foreground: 0.25 0.06 52;
+
+    /* Destructive */
+    --destructive: 0.58 0.22 27;
+    --destructive-foreground: 1 0 0;
+
+    /* Border / Input / Ring */
+    --border: 0.88 0.02 85;
+    --input: 0.88 0.02 85;
+    --ring: 0.62 0.18 52;
+
+    /* Charts */
+    --chart-1: 0.72 0.19 52;
+    --chart-2: 0.62 0.16 185;
+    --chart-3: 0.52 0.14 260;
+    --chart-4: 0.82 0.18 84;
+    --chart-5: 0.68 0.18 70;
+
+    /* Sidebar */
+    --sidebar: 0.96 0.01 85;
+    --sidebar-foreground: 0.18 0.04 260;
+    --sidebar-primary: 0.62 0.18 52;
+    --sidebar-primary-foreground: 1 0 0;
+    --sidebar-accent: 0.92 0.12 85;
+    --sidebar-accent-foreground: 0.25 0.06 52;
+    --sidebar-border: 0.88 0.02 85;
+    --sidebar-ring: 0.62 0.18 52;
+
+    /* Custom tokens */
+    --amber: 0.72 0.19 52;
+    --amber-light: 0.92 0.14 85;
+    --teal: 0.62 0.14 185;
+    --teal-light: 0.88 0.08 185;
+    --teal-dark: 0.42 0.14 185;
+  }
+
+  .dark {
+    --background: 0.14 0.03 260;
+    --foreground: 0.96 0.01 85;
+
+    --card: 0.2 0.04 260;
+    --card-foreground: 0.96 0.01 85;
+
+    --popover: 0.22 0.04 260;
+    --popover-foreground: 0.96 0.01 85;
+
+    --primary: 0.78 0.18 52;
+    --primary-foreground: 0.14 0.03 260;
+
+    --secondary: 0.28 0.06 185;
+    --secondary-foreground: 0.88 0.08 185;
+
+    --muted: 0.24 0.03 260;
+    --muted-foreground: 0.65 0.03 260;
+
+    --accent: 0.3 0.08 52;
+    --accent-foreground: 0.92 0.12 85;
+
+    --destructive: 0.68 0.22 27;
+    --destructive-foreground: 1 0 0;
+
+    --border: 1 0 0 / 10%;
+    --input: 1 0 0 / 15%;
+    --ring: 0.78 0.18 52;
+
+    --chart-1: 0.78 0.19 52;
+    --chart-2: 0.62 0.16 185;
+    --chart-3: 0.52 0.14 260;
+    --chart-4: 0.82 0.18 84;
+    --chart-5: 0.68 0.18 70;
+
+    --sidebar: 0.2 0.04 260;
+    --sidebar-foreground: 0.96 0.01 85;
+    --sidebar-primary: 0.78 0.18 52;
+    --sidebar-primary-foreground: 0.14 0.03 260;
+    --sidebar-accent: 0.3 0.08 52;
+    --sidebar-accent-foreground: 0.92 0.12 85;
+    --sidebar-border: 1 0 0 / 10%;
+    --sidebar-ring: 0.78 0.18 52;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Nunito", sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Space Grotesk", sans-serif;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: "Space Grotesk", sans-serif;
+  }
+
+  .font-body {
+    font-family: "Nunito", sans-serif;
+  }
+
+  .gradient-amber {
+    background: linear-gradient(
+      135deg,
+      oklch(0.72 0.19 52),
+      oklch(0.82 0.18 70)
+    );
+  }
+
+  .gradient-teal {
+    background: linear-gradient(
+      135deg,
+      oklch(0.42 0.14 185),
+      oklch(0.62 0.14 185)
+    );
+  }
+
+  .gradient-hero {
+    background: linear-gradient(
+      135deg,
+      oklch(0.18 0.06 260) 0%,
+      oklch(0.28 0.08 240) 50%,
+      oklch(0.22 0.1 200) 100%
+    );
+  }
+
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5;
+  }
+
+  .answer-option {
+    @apply cursor-pointer rounded-xl border-2 p-4 transition-all duration-150;
+  }
+
+  /* Use plain CSS for custom OKLCH colors with alpha — @apply cannot resolve opacity modifiers on custom tokens */
+  .answer-option:hover {
+    border-color: oklch(0.72 0.19 52);
+    background-color: oklch(0.92 0.14 85 / 0.3);
+  }
+
+  .answer-option.selected {
+    border-color: oklch(0.72 0.19 52);
+    background-color: oklch(0.92 0.14 85 / 0.5);
+  }
+
+  .answer-option.correct {
+    border-color: oklch(0.62 0.14 185);
+    background-color: oklch(0.88 0.08 185 / 0.4);
+  }
+
+  .answer-option.incorrect {
+    @apply border-destructive;
+    background-color: oklch(0.58 0.22 27 / 0.1);
+  }
+}
