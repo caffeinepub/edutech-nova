@@ -22,7 +22,7 @@ export const idlService = IDL.Service({
   'getAllQuestions' : IDL.Func([], [IDL.Vec(Question)], ['query']),
   'getQuestion' : IDL.Func([IDL.Nat], [Question], ['query']),
   'getRandomMotivation' : IDL.Func([], [IDL.Text], []),
-  'isAnswerCorrect' : IDL.Func([IDL.Nat, IDL.Nat], [IDL.Bool], ['query']),
+  'isAnswerCorrect' : IDL.Func([IDL.Nat, IDL.Nat], [IDL.Bool], []),
 });
 
 export const idlInitArgs = [];
@@ -42,7 +42,7 @@ export const idlFactory = ({ IDL }) => {
     'getAllQuestions' : IDL.Func([], [IDL.Vec(Question)], ['query']),
     'getQuestion' : IDL.Func([IDL.Nat], [Question], ['query']),
     'getRandomMotivation' : IDL.Func([], [IDL.Text], []),
-    'isAnswerCorrect' : IDL.Func([IDL.Nat, IDL.Nat], [IDL.Bool], ['query']),
+    'isAnswerCorrect' : IDL.Func([IDL.Nat, IDL.Nat], [IDL.Bool], []),
   });
 };
 

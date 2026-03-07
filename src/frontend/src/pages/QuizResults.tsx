@@ -73,7 +73,7 @@ export default function QuizResults() {
         "/assets/generated/apatra-signature-transparent.dim_300x100.png",
       ),
     ]).then(([stampImg, sigImg]) => {
-      // Background — cream/ivory
+      // Background — premium cream/ivory
       ctx.fillStyle = "#FFFDF5";
       ctx.fillRect(0, 0, W, H);
 
@@ -216,45 +216,44 @@ export default function QuizResults() {
       ctx.textAlign = "center";
       ctx.fillText("Official Seal", stampX + 60, stampY + 135);
 
-      // ---- RIGHT SIDE — Signature ----
-      const sigX = 680;
-      const sigLineY = H - 95;
+      // ---- RIGHT SIDE — Compact Signature ----
+      const sigX = 690;
+      const sigLineY = H - 85;
 
-      // Horizontal line above signature
-      ctx.strokeStyle = "#1B2A6B";
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(sigX, sigLineY - 75);
-      ctx.lineTo(sigX + 200, sigLineY - 75);
-      ctx.stroke();
-
+      // Small compact signature image (140x46)
       if (sigImg.complete && sigImg.naturalWidth > 0) {
-        ctx.drawImage(sigImg, sigX, sigLineY - 145, 200, 67);
+        ctx.drawImage(sigImg, sigX, sigLineY - 85, 140, 46);
       } else {
-        // Fallback cursive text
-        ctx.font = "italic bold 28px Georgia, serif";
+        // Fallback: elegant cursive script
+        ctx.font = "italic bold 22px 'Palatino Linotype', Georgia, serif";
         ctx.fillStyle = "#1B2A6B";
         ctx.textAlign = "left";
-        ctx.fillText("Apatra", sigX + 20, sigLineY - 85);
+        ctx.fillText("Apatra", sigX + 10, sigLineY - 55);
       }
 
-      // Horizontal divider line
+      // Thin horizontal divider line under signature
       ctx.strokeStyle = "#1B2A6B";
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(sigX, sigLineY - 10);
-      ctx.lineTo(sigX + 200, sigLineY - 10);
+      ctx.moveTo(sigX, sigLineY - 28);
+      ctx.lineTo(sigX + 160, sigLineY - 28);
       ctx.stroke();
 
       // Signature name
-      ctx.font = "bold 16px Georgia, serif";
+      ctx.font = "bold 13px Georgia, serif";
       ctx.fillStyle = "#1B2A6B";
       ctx.textAlign = "center";
-      ctx.fillText("Apatra", sigX + 100, sigLineY + 12);
+      ctx.fillText("Apatra", sigX + 80, sigLineY - 14);
 
-      ctx.font = "13px Georgia, serif";
-      ctx.fillStyle = "#666666";
-      ctx.fillText("Director, EduTech Nova", sigX + 100, sigLineY + 30);
+      // Title line — Founder
+      ctx.font = "11px Georgia, serif";
+      ctx.fillStyle = "#555555";
+      ctx.fillText("Founder, EduTech Nova", sigX + 80, sigLineY + 1);
+
+      // "— Signature of Founder —" label at bottom
+      ctx.font = "italic 10px Georgia, serif";
+      ctx.fillStyle = "#999999";
+      ctx.fillText("— Signature of Founder —", sigX + 80, sigLineY + 16);
     });
   }, [name, score, total, percentage]);
 
@@ -273,10 +272,24 @@ export default function QuizResults() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-3xl">
       {/* Certificate Section */}
-      <div className="bg-card rounded-3xl p-6 md:p-8 border border-border shadow-card mb-8 animate-fade-in">
+      <div
+        className="rounded-3xl p-6 md:p-8 border mb-8 animate-fade-in"
+        style={{
+          background: "oklch(1 0 0)",
+          border: "1px solid oklch(0.88 0.03 265 / 0.7)",
+          boxShadow:
+            "0 8px 40px -8px oklch(0.18 0.08 265 / 0.14), 0 2px 8px -2px oklch(0.18 0.08 265 / 0.06)",
+        }}
+      >
         {/* Certificate Heading */}
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl gradient-amber flex items-center justify-center shadow-glow">
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center shadow-glow"
+            style={{
+              background:
+                "linear-gradient(135deg, oklch(0.68 0.20 52), oklch(0.78 0.18 70))",
+            }}
+          >
             <Award className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -292,8 +305,12 @@ export default function QuizResults() {
         {/* Canvas Preview */}
         <div
           data-ocid="certificate.canvas_target"
-          className="overflow-auto rounded-2xl border border-border/50 bg-muted/20 shadow-inner"
-          style={{ maxHeight: "420px" }}
+          className="overflow-auto rounded-2xl border shadow-inner"
+          style={{
+            maxHeight: "420px",
+            background: "oklch(0.96 0.01 265 / 0.5)",
+            borderColor: "oklch(0.88 0.03 265 / 0.4)",
+          }}
         >
           <canvas
             ref={canvasRef}
@@ -311,7 +328,11 @@ export default function QuizResults() {
           data-ocid="certificate.download_button"
           size="lg"
           onClick={handleDownload}
-          className="w-full mt-5 gradient-amber text-white font-bold text-base py-5 rounded-2xl shadow-glow hover:scale-[1.02] transition-all duration-200 border-0 h-auto"
+          className="w-full mt-5 text-white font-bold text-base py-5 rounded-2xl shadow-glow hover:scale-[1.02] transition-all duration-200 border-0 h-auto animate-pulse-glow"
+          style={{
+            background:
+              "linear-gradient(135deg, oklch(0.68 0.20 52), oklch(0.78 0.18 70))",
+          }}
         >
           <Download className="w-5 h-5 mr-2" />
           Download Certificate
@@ -319,13 +340,27 @@ export default function QuizResults() {
       </div>
 
       {/* Results Card */}
-      <div className="bg-card rounded-3xl p-8 md:p-10 border border-border shadow-card text-center animate-scale-in">
+      <div
+        className="rounded-3xl p-8 md:p-10 border text-center animate-scale-in"
+        style={{
+          background: "oklch(1 0 0)",
+          border: "1px solid oklch(0.88 0.03 265 / 0.7)",
+          boxShadow:
+            "0 8px 40px -8px oklch(0.18 0.08 265 / 0.14), 0 2px 8px -2px oklch(0.18 0.08 265 / 0.06)",
+        }}
+      >
         {/* Trophy Icon */}
-        <div className="w-20 h-20 rounded-full gradient-amber flex items-center justify-center mx-auto mb-6 shadow-glow">
+        <div
+          className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-glow animate-float"
+          style={{
+            background:
+              "linear-gradient(135deg, oklch(0.68 0.20 52), oklch(0.78 0.18 70))",
+          }}
+        >
           <Trophy className="w-10 h-10 text-white" />
         </div>
 
-        <h1 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-2">
+        <h1 className="font-display font-extrabold text-3xl md:text-4xl text-foreground mb-2">
           Quiz Complete!
         </h1>
         {name !== "Student" && (
@@ -350,7 +385,7 @@ export default function QuizResults() {
               cy="50"
               r="42"
               fill="none"
-              stroke="oklch(0.88 0.02 85)"
+              stroke="oklch(0.92 0.03 265)"
               strokeWidth="8"
             />
             <circle
@@ -380,16 +415,22 @@ export default function QuizResults() {
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="bg-muted/50 rounded-2xl p-4">
+          <div
+            className="rounded-2xl p-4"
+            style={{ background: "oklch(0.95 0.02 265 / 0.6)" }}
+          >
             <div className="flex items-center justify-center mb-1">
-              <Target className="w-5 h-5 text-amber" />
+              <Target className="w-5 h-5 text-indigo" />
             </div>
             <p className="font-display font-bold text-2xl text-foreground">
               {total}
             </p>
             <p className="text-xs text-muted-foreground font-semibold">Total</p>
           </div>
-          <div className="bg-teal-light/30 rounded-2xl p-4">
+          <div
+            className="rounded-2xl p-4"
+            style={{ background: "oklch(0.92 0.06 185 / 0.5)" }}
+          >
             <div className="flex items-center justify-center mb-1">
               <Star className="w-5 h-5 text-teal" />
             </div>
@@ -398,9 +439,12 @@ export default function QuizResults() {
               Correct
             </p>
           </div>
-          <div className="bg-destructive/10 rounded-2xl p-4">
+          <div
+            className="rounded-2xl p-4"
+            style={{ background: "oklch(0.56 0.22 27 / 0.08)" }}
+          >
             <div className="flex items-center justify-center mb-1">
-              <span className="text-destructive text-lg">✗</span>
+              <span className="text-destructive text-lg font-bold">✗</span>
             </div>
             <p className="font-display font-bold text-2xl text-destructive">
               {total - score}
@@ -412,18 +456,27 @@ export default function QuizResults() {
         {/* Actions */}
         <div className="flex flex-col gap-3">
           <Button
+            data-ocid="results.primary_button"
             size="lg"
             onClick={() => navigate({ to: "/quiz" })}
-            className="w-full gradient-amber text-white font-bold text-base py-5 rounded-2xl shadow-glow hover:scale-[1.02] transition-all duration-200 border-0 h-auto"
+            className="w-full text-white font-bold text-base py-5 rounded-2xl shadow-glow-indigo hover:scale-[1.02] transition-all duration-200 border-0 h-auto"
+            style={{
+              background:
+                "linear-gradient(135deg, oklch(0.42 0.22 265), oklch(0.52 0.24 285))",
+            }}
           >
             <RotateCcw className="w-5 h-5 mr-2" />
             Try Again
           </Button>
           <Button
+            data-ocid="results.secondary_button"
             size="lg"
             variant="outline"
             onClick={() => navigate({ to: "/" })}
             className="w-full font-bold text-base py-5 rounded-2xl h-auto border-2"
+            style={{
+              borderColor: "oklch(0.88 0.03 265 / 0.8)",
+            }}
           >
             <Home className="w-5 h-5 mr-2" />
             Back to Home
