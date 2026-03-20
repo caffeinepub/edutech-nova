@@ -1,42 +1,33 @@
 # EduTech Nova
 
 ## Current State
-- React + Motoko app with quiz (25 JEE questions) and motivational messages
-- Quiz page shows questions and navigates to results page with score/total
-- Results page shows score percentage, grade, and buttons to retry or go home
-- No name input before quiz, no certificate generation
+APE AI page exists as a game-only AI assistant (Snake, Pong, Breakout, Quiz game, Platformer). It handles game development prompts only.
 
 ## Requested Changes (Diff)
 
 ### Add
-- Name input screen before quiz starts: user types their name before beginning the quiz
-- Name is stored in component state and passed along to results via router search params
-- Certificate generation page/section in QuizResults: after quiz completion, a downloadable certificate is auto-generated on a canvas element
-- Certificate design includes:
-  - EduTech Nova official stamp (circular badge with logo)
-  - "Apatra" signature at the bottom
-  - Student name prominently displayed
-  - Score/percentage achieved
-  - Date of completion
-  - Certificate title: "Certificate of Achievement"
-- Download button to save certificate as PNG image
-- Certificate gallery view: certificates are displayed in a gallery card style on the results page
+- Full app/website builder capability (todo apps, calculators, landing pages, portfolios, dashboards, weather UI, timer, etc.)
+- More game types (Tetris, memory match, flappy bird, tic-tac-toe, etc.)
+- Code generation for React components, CSS styling, HTML pages
+- App idea brainstorming and planning responses
+- More quick prompt chips covering diverse app types
+- Caffeine AI-style welcome message introducing full-stack capabilities
+- Live HTML iframe demos for all generated web apps
+- Richer conversational responses for "what can you build", "help me", "ideas" etc.
 
 ### Modify
-- Quiz.tsx: Add a "name entry" screen shown before the first question. User enters their name and clicks "Start Quiz". Name is passed to results route via search params.
-- QuizResults.tsx: Accept `name` from search params, generate certificate on canvas, show download button
-- App.tsx: Update route search param types to include `name` field for quiz results route
+- Expand getApeResponse to handle 20+ prompt categories
+- Update quick prompts to show diverse app types
+- Update header subtitle from "Game Developer AI" to "Build Anything AI"
+- Welcome message updated to reflect full capabilities
 
 ### Remove
 - Nothing removed
 
 ## Implementation Plan
-1. Update App.tsx to include `name` in quizResultsRoute search params validation
-2. Update Quiz.tsx to show name input form before quiz begins; pass name to results route
-3. Update QuizResults.tsx:
-   - Accept name from search params
-   - Add `<canvas>` element that renders the certificate
-   - Draw certificate on canvas: background, title, name, score, date, EduTech Nova stamp image, Apatra signature text
-   - Add "Download Certificate" button that uses canvas.toDataURL() to trigger download
-4. Generate stamp image asset: circular EduTech Nova official stamp PNG
-5. Generate signature image: "Apatra" handwritten-style signature PNG
+1. Add 15+ new HTML app templates (calculator, todo, timer, landing page, dashboard, portfolio, weather UI, markdown editor, quiz builder, color picker, password generator, etc.)
+2. Add 8+ new game templates (Tetris, tic-tac-toe, memory match, flappy bird, etc.)
+3. Expand getApeResponse with comprehensive keyword matching
+4. Update quick prompts chips to cover both apps and games
+5. Update header and welcome message
+6. Support iframe rendering for all HTML demos

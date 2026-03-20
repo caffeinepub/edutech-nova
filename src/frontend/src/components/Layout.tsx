@@ -70,14 +70,14 @@ export default function Layout({ children }: LayoutProps) {
             </div>
           </Link>
 
-          <nav className="flex items-center gap-1">
+          <nav className="flex items-center gap-1 flex-wrap justify-end">
             <Link
               to="/quiz"
               data-ocid="nav.link"
-              className="relative px-4 py-2 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground transition-all duration-200 hover:bg-muted/50"
+              className="relative px-3 py-2 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground transition-all duration-200 hover:bg-muted/50"
               activeProps={{
                 className:
-                  "relative px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200",
+                  "relative px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200",
                 style: {
                   color: "oklch(0.42 0.22 265)",
                   background: "oklch(0.42 0.22 265 / 0.08)",
@@ -85,16 +85,33 @@ export default function Layout({ children }: LayoutProps) {
               }}
               activeOptions={{ includeSearch: false }}
             >
-              📝 Quiz
+              📝 JEE
+              <ActiveDot />
+            </Link>
+            <Link
+              to="/neet-quiz"
+              data-ocid="nav.link"
+              className="relative px-3 py-2 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground transition-all duration-200 hover:bg-muted/50"
+              activeProps={{
+                className:
+                  "relative px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200",
+                style: {
+                  color: "oklch(0.40 0.18 145)",
+                  background: "oklch(0.40 0.18 145 / 0.08)",
+                },
+              }}
+              activeOptions={{ includeSearch: false }}
+            >
+              🌿 NEET
               <ActiveDot />
             </Link>
             <Link
               to="/motivation"
               data-ocid="nav.link"
-              className="relative px-4 py-2 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground transition-all duration-200 hover:bg-muted/50"
+              className="relative px-3 py-2 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground transition-all duration-200 hover:bg-muted/50"
               activeProps={{
                 className:
-                  "relative px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200",
+                  "relative px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200",
                 style: {
                   color: "oklch(0.38 0.16 185)",
                   background: "oklch(0.55 0.16 185 / 0.08)",
@@ -102,6 +119,29 @@ export default function Layout({ children }: LayoutProps) {
               }}
             >
               ⚡ Motivation
+              <ActiveDot />
+            </Link>
+            <Link
+              to="/ape-ai"
+              data-ocid="nav.link"
+              className="relative px-2 py-1.5 rounded-xl text-sm font-semibold transition-all duration-200"
+              style={{
+                background: "oklch(0.72 0.22 295 / 0.12)",
+                border: "1px solid oklch(0.72 0.22 295 / 0.35)",
+                color: "oklch(0.72 0.22 295)",
+              }}
+              activeProps={{
+                className:
+                  "relative px-2 py-1.5 rounded-xl text-sm font-semibold transition-all duration-200",
+                style: {
+                  color: "oklch(0.82 0.22 295)",
+                  background: "oklch(0.72 0.22 295 / 0.22)",
+                  border: "1px solid oklch(0.72 0.22 295 / 0.7)",
+                  boxShadow: "0 0 12px oklch(0.72 0.22 295 / 0.3)",
+                },
+              }}
+            >
+              🤖 APE AI
               <ActiveDot />
             </Link>
           </nav>

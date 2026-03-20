@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Brain, Sparkles, Star, Zap } from "lucide-react";
+import { ArrowRight, Brain, Leaf, Sparkles, Star, Zap } from "lucide-react";
 
 // Floating particle positions for the hero
 const PARTICLES = [
@@ -138,9 +138,9 @@ export default function Home() {
             </h1>
 
             <p className="text-white/70 text-lg md:text-xl mb-10 leading-relaxed animate-fade-in max-w-2xl mx-auto">
-              Challenge your knowledge with JEE-level quizzes and fuel your
-              study sessions with powerful motivational messages. Earn your
-              certificate on completion!
+              Master JEE &amp; NEET with interactive quizzes, instant solutions,
+              and earn a certificate on completion. Fuel your journey with daily
+              motivation!
             </p>
 
             {/* Hero Image */}
@@ -173,7 +173,7 @@ export default function Home() {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in flex-wrap">
               <Button
                 data-ocid="home.quiz.primary_button"
                 size="lg"
@@ -181,7 +181,23 @@ export default function Home() {
                 className="gradient-amber text-white font-bold text-lg px-8 py-6 rounded-2xl border-0 h-auto animate-pulse-glow transition-all duration-200 hover:scale-105 hover:shadow-glow"
               >
                 <Brain className="w-5 h-5 mr-2" />
-                Start Quiz
+                JEE Quiz
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+
+              <Button
+                data-ocid="home.neet.primary_button"
+                size="lg"
+                onClick={() => navigate({ to: "/neet-quiz" })}
+                className="text-white font-bold text-lg px-8 py-6 rounded-2xl border-0 h-auto transition-all duration-200 hover:scale-105"
+                style={{
+                  background:
+                    "linear-gradient(135deg, oklch(0.40 0.18 145), oklch(0.52 0.20 160))",
+                  boxShadow: "0 4px 20px -4px oklch(0.40 0.18 145 / 0.5)",
+                }}
+              >
+                <Leaf className="w-5 h-5 mr-2" />
+                NEET Quiz
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
 
@@ -199,6 +215,21 @@ export default function Home() {
               >
                 <Zap className="w-5 h-5 mr-2" />
                 Get Motivated
+              </Button>
+
+              <Button
+                data-ocid="home.apeai.primary_button"
+                size="lg"
+                onClick={() => navigate({ to: "/ape-ai" })}
+                className="text-white font-bold text-lg px-8 py-6 rounded-2xl border-0 h-auto transition-all duration-200 hover:scale-105"
+                style={{
+                  background:
+                    "linear-gradient(135deg, oklch(0.42 0.25 295), oklch(0.55 0.25 280))",
+                  boxShadow: "0 4px 20px -4px oklch(0.52 0.25 295 / 0.6)",
+                }}
+              >
+                🤖 APE AI
+                <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </div>
           </div>
@@ -234,12 +265,12 @@ export default function Home() {
               </span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-xl mx-auto leading-relaxed">
-              Two powerful tools designed to supercharge your learning journey.
+              Four powerful tools designed to supercharge your learning journey.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {/* Quiz Card */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            {/* JEE Quiz Card */}
             <button
               type="button"
               data-ocid="home.quiz.card"
@@ -271,19 +302,81 @@ export default function Home() {
                   className="w-10 h-10 object-contain"
                 />
               </div>
-              <h3 className="font-display font-bold text-2xl text-foreground mb-3">
+              <h3 className="font-display font-bold text-xl text-foreground mb-3">
                 JEE Interactive Quiz
               </h3>
               <p className="text-muted-foreground leading-relaxed mb-5 text-sm">
                 25 Physics, Chemistry &amp; Mathematics questions at JEE-level
-                difficulty. Get instant feedback and a downloadable certificate
-                upon completion.
+                difficulty. Instant feedback and downloadable certificate.
               </p>
               <div
                 className="flex items-center gap-2 font-semibold text-sm"
                 style={{ color: "oklch(0.72 0.19 52)" }}
               >
-                Start Quiz{" "}
+                Start JEE Quiz{" "}
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </button>
+
+            {/* NEET Quiz Card */}
+            <button
+              type="button"
+              data-ocid="home.neet.card"
+              className="group text-left cursor-pointer rounded-3xl p-8 border transition-all duration-300 hover:-translate-y-1.5"
+              style={{
+                background: "oklch(1 0 0)",
+                border: "1px solid oklch(0.88 0.04 145 / 0.8)",
+                boxShadow:
+                  "0 4px 24px -4px oklch(0.18 0.08 145 / 0.10), 0 2px 8px -2px oklch(0.18 0.08 145 / 0.06)",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.boxShadow =
+                  "0 12px 40px -6px oklch(0.40 0.18 145 / 0.18), 0 4px 16px -4px oklch(0.40 0.18 145 / 0.10)";
+                (e.currentTarget as HTMLElement).style.borderColor =
+                  "oklch(0.40 0.18 145 / 0.3)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.boxShadow =
+                  "0 4px 24px -4px oklch(0.18 0.08 145 / 0.10), 0 2px 8px -2px oklch(0.18 0.08 145 / 0.06)";
+                (e.currentTarget as HTMLElement).style.borderColor =
+                  "oklch(0.88 0.04 145 / 0.8)";
+              }}
+              onClick={() => navigate({ to: "/neet-quiz" })}
+            >
+              <div
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300"
+                style={{
+                  background:
+                    "linear-gradient(135deg, oklch(0.40 0.18 145), oklch(0.52 0.20 160))",
+                  boxShadow: "0 4px 16px -4px oklch(0.40 0.18 145 / 0.5)",
+                }}
+              >
+                <Leaf className="w-9 h-9 text-white" />
+              </div>
+              <div className="flex items-center gap-2 mb-3">
+                <h3 className="font-display font-bold text-xl text-foreground">
+                  NEET Challenge
+                </h3>
+                <span
+                  className="text-xs font-bold px-2 py-0.5 rounded-full"
+                  style={{
+                    background: "oklch(0.92 0.07 145 / 0.8)",
+                    color: "oklch(0.40 0.18 145)",
+                  }}
+                >
+                  NEW
+                </span>
+              </div>
+              <p className="text-muted-foreground leading-relaxed mb-5 text-sm">
+                60 questions covering Physics, Chemistry &amp; Biology with
+                detailed solutions after each answer. Certificate &amp; grade
+                included.
+              </p>
+              <div
+                className="flex items-center gap-2 font-semibold text-sm"
+                style={{ color: "oklch(0.40 0.18 145)" }}
+              >
+                Start NEET Quiz{" "}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </button>
@@ -320,7 +413,7 @@ export default function Home() {
                   className="w-10 h-10 object-contain"
                 />
               </div>
-              <h3 className="font-display font-bold text-2xl text-foreground mb-3">
+              <h3 className="font-display font-bold text-xl text-foreground mb-3">
                 Daily Motivation
               </h3>
               <p className="text-muted-foreground leading-relaxed mb-5 text-sm">
@@ -332,6 +425,83 @@ export default function Home() {
                 style={{ color: "oklch(0.55 0.16 185)" }}
               >
                 Get Inspired{" "}
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </button>
+
+            {/* APE AI Card */}
+            <button
+              type="button"
+              data-ocid="home.apeai.card"
+              className="group text-left cursor-pointer rounded-3xl p-8 border transition-all duration-300 hover:-translate-y-1.5"
+              style={{
+                background: "oklch(0.08 0.04 295)",
+                border: "1px solid oklch(0.72 0.22 295 / 0.4)",
+                boxShadow:
+                  "0 4px 24px -4px oklch(0.52 0.25 295 / 0.20), 0 0 0 1px oklch(0.72 0.22 295 / 0.1)",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.boxShadow =
+                  "0 12px 40px -6px oklch(0.52 0.25 295 / 0.45), 0 0 30px oklch(0.72 0.22 295 / 0.15)";
+                (e.currentTarget as HTMLElement).style.borderColor =
+                  "oklch(0.72 0.22 295 / 0.7)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.boxShadow =
+                  "0 4px 24px -4px oklch(0.52 0.25 295 / 0.20), 0 0 0 1px oklch(0.72 0.22 295 / 0.1)";
+                (e.currentTarget as HTMLElement).style.borderColor =
+                  "oklch(0.72 0.22 295 / 0.4)";
+              }}
+              onClick={() => navigate({ to: "/ape-ai" })}
+            >
+              <div
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300"
+                style={{
+                  background: "oklch(0.15 0.06 295)",
+                  boxShadow:
+                    "0 0 20px oklch(0.72 0.22 295 / 0.4), inset 0 1px 0 oklch(0.72 0.22 295 / 0.2)",
+                  border: "1px solid oklch(0.72 0.22 295 / 0.4)",
+                }}
+              >
+                <img
+                  src="/assets/generated/ape-ai-logo-transparent.dim_200x200.png"
+                  alt="APE AI"
+                  className="w-10 h-10 object-contain"
+                  style={{
+                    filter: "drop-shadow(0 0 8px oklch(0.72 0.22 295))",
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-2 mb-3">
+                <h3
+                  className="font-display font-bold text-xl"
+                  style={{ color: "oklch(0.82 0.22 295)" }}
+                >
+                  APE AI
+                </h3>
+                <span
+                  className="text-xs font-bold px-2 py-0.5 rounded-full"
+                  style={{
+                    background: "oklch(0.72 0.22 295 / 0.2)",
+                    color: "oklch(0.82 0.22 295)",
+                    border: "1px solid oklch(0.72 0.22 295 / 0.4)",
+                  }}
+                >
+                  AI
+                </span>
+              </div>
+              <p
+                style={{ color: "oklch(0.55 0.08 295)" }}
+                className="leading-relaxed mb-5 text-sm"
+              >
+                Build any game with AI. Just describe what you want and APE AI
+                writes the code and demos it live.
+              </p>
+              <div
+                className="flex items-center gap-2 font-semibold text-sm"
+                style={{ color: "oklch(0.72 0.22 295)" }}
+              >
+                Start Building{" "}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </button>
@@ -348,6 +518,13 @@ export default function Home() {
                 bg: "oklch(0.95 0.06 85)",
               },
               {
+                icon: <Leaf className="w-5 h-5" />,
+                value: "60",
+                label: "NEET Questions",
+                color: "oklch(0.40 0.18 145)",
+                bg: "oklch(0.92 0.07 145)",
+              },
+              {
                 icon: <Star className="w-5 h-5" />,
                 value: "∞",
                 label: "Motivational Quotes",
@@ -360,6 +537,13 @@ export default function Home() {
                 label: "Certificate Included",
                 color: "oklch(0.42 0.22 265)",
                 bg: "oklch(0.92 0.05 265)",
+              },
+              {
+                icon: <span>🤖</span>,
+                value: "AI",
+                label: "Game Dev AI",
+                color: "oklch(0.72 0.22 295)",
+                bg: "oklch(0.15 0.05 295)",
               },
             ].map((stat) => (
               <div
