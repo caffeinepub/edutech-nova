@@ -17,6 +17,47 @@ interface Message {
   language?: string;
   demoType?: DemoType;
 }
+// ── Published Apps ─────────────────────────────────────────────────────────
+
+interface PublishedApp {
+  id: string;
+  title: string;
+  code: string;
+  type: "game" | "app";
+  views: number;
+  publishedAt: string;
+}
+
+const STORAGE_KEY = "ape_published_apps";
+
+function getPublishedApps(): PublishedApp[] {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function savePublishedApp(app: PublishedApp) {
+  const apps = getPublishedApps();
+  apps.unshift(app);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(apps));
+}
+
+function incrementView(id: string) {
+  const apps = getPublishedApps();
+  const app = apps.find((a) => a.id === id);
+  if (app) {
+    app.views++;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(apps));
+  }
+}
+
+function inferType(code: string): "game" | "app" {
+  const gameKeywords =
+    /canvas|snake|pong|breakout|platformer|setInterval.*ctx|requestAnimationFrame/i;
+  return gameKeywords.test(code) ? "game" : "app";
+}
 
 // ── Game HTML Templates ────────────────────────────────────────────────────
 
@@ -1203,11 +1244,51 @@ export default function ApeAi() {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const msgId = useRef(1);
+  const [activeTab, setActiveTab] = useState<"studio" | "gallery">("studio");
+  const [publishedApps, setPublishedApps] = useState<PublishedApp[]>([]);
+  const [playModal, setPlayModal] = useState<PublishedApp | null>(null);
+  // removed unused state
+  const [publishToast, setPublishToast] = useState("");
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: scroll on change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
+
+  useEffect(() => {
+    if (activeTab === "gallery") {
+      setPublishedApps(getPublishedApps());
+    }
+  }, [activeTab]);
+
+  const handlePublish = (msg: Message) => {
+    const name = window.prompt(
+      "Name your app:",
+      msg.text.split("**")[1] || "My App",
+    );
+    if (!name) return;
+    const app: PublishedApp = {
+      id: Date.now().toString(),
+      title: name.trim(),
+      code: msg.code!,
+      type: inferType(msg.code!),
+      views: 0,
+      publishedAt: new Date().toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+    };
+    savePublishedApp(app);
+    setPublishToast(`✅ "${name}" published! Check the Published Apps tab.`);
+    setTimeout(() => setPublishToast(""), 3500);
+  };
+
+  const handlePlay = (app: PublishedApp) => {
+    incrementView(app.id);
+    setPublishedApps(getPublishedApps());
+    setPlayModal(app);
+  };
 
   const sendMessage = (text: string) => {
     const trimmed = text.trim();
@@ -1355,291 +1436,629 @@ export default function ApeAi() {
         </div>
       </header>
 
-      {/* Messages */}
-      <main
+      {/* Tab Bar */}
+      <div
         style={{
-          flex: 1,
-          overflowY: "auto",
-          padding: "20px",
+          background: "oklch(0.10 0.05 295 / 0.95)",
+          borderBottom: "1px solid oklch(0.72 0.22 295 / 0.2)",
+          padding: "0 20px",
           display: "flex",
-          flexDirection: "column",
-          gap: "16px",
+          gap: "4px",
         }}
       >
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
+        {(["studio", "gallery"] as const).map((tab) => (
+          <button
+            key={tab}
+            type="button"
+            onClick={() => setActiveTab(tab)}
             style={{
-              display: "flex",
-              justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
-              gap: "10px",
-              alignItems: "flex-start",
+              background: "none",
+              border: "none",
+              borderBottom:
+                activeTab === tab
+                  ? "2px solid oklch(0.72 0.22 295)"
+                  : "2px solid transparent",
+              color:
+                activeTab === tab
+                  ? "oklch(0.82 0.22 295)"
+                  : "oklch(0.55 0.08 295)",
+              padding: "10px 18px",
+              cursor: "pointer",
+              fontSize: "0.85rem",
+              fontWeight: 700,
+              transition: "all 0.2s",
             }}
           >
-            {msg.role === "ai" && (
+            {tab === "studio" ? "🤖 APE AI Studio" : "🚀 Published Apps"}
+          </button>
+        ))}
+      </div>
+
+      {/* Toast */}
+      {publishToast && (
+        <div
+          style={{
+            position: "fixed",
+            top: "80px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: "oklch(0.25 0.12 145)",
+            border: "1px solid oklch(0.55 0.22 145)",
+            borderRadius: "10px",
+            padding: "10px 24px",
+            color: "oklch(0.85 0.15 145)",
+            fontSize: "0.88rem",
+            fontWeight: 600,
+            zIndex: 999,
+            boxShadow: "0 4px 20px oklch(0.55 0.22 145 / 0.4)",
+          }}
+        >
+          {publishToast}
+        </div>
+      )}
+
+      {/* Published Apps Gallery */}
+      {activeTab === "gallery" && (
+        <div style={{ flex: 1, overflowY: "auto", padding: "24px 20px" }}>
+          {publishedApps.length === 0 ? (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "80px 20px",
+                color: "oklch(0.50 0.08 295)",
+              }}
+            >
+              <div style={{ fontSize: "4rem", marginBottom: "16px" }}>🚀</div>
+              <h3
+                style={{
+                  color: "oklch(0.72 0.22 295)",
+                  marginBottom: "10px",
+                  fontSize: "1.2rem",
+                }}
+              >
+                No published apps yet
+              </h3>
+              <p style={{ fontSize: "0.9rem" }}>
+                Build something in APE AI Studio and click{" "}
+                <strong style={{ color: "oklch(0.72 0.22 295)" }}>
+                  🚀 Publish This App
+                </strong>{" "}
+                to see it here!
+              </p>
+            </div>
+          ) : (
+            <div>
+              <h2
+                style={{
+                  color: "oklch(0.82 0.22 295)",
+                  fontSize: "1.2rem",
+                  fontWeight: 800,
+                  marginBottom: "20px",
+                }}
+              >
+                🚀 Your Published Apps ({publishedApps.length})
+              </h2>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+                  gap: "16px",
+                }}
+              >
+                {publishedApps.map((app) => (
+                  <div
+                    key={app.id}
+                    style={{
+                      background: "oklch(0.12 0.04 295)",
+                      border: "1px solid oklch(0.72 0.22 295 / 0.35)",
+                      borderRadius: "14px",
+                      padding: "20px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "12px",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLDivElement).style.borderColor =
+                        "oklch(0.72 0.22 295 / 0.7)";
+                      (e.currentTarget as HTMLDivElement).style.boxShadow =
+                        "0 0 20px oklch(0.72 0.22 295 / 0.2)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLDivElement).style.borderColor =
+                        "oklch(0.72 0.22 295 / 0.35)";
+                      (e.currentTarget as HTMLDivElement).style.boxShadow =
+                        "none";
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                      }}
+                    >
+                      <span style={{ fontSize: "2rem" }}>
+                        {app.type === "game" ? "🎮" : "📱"}
+                      </span>
+                      <div>
+                        <h3
+                          style={{
+                            color: "oklch(0.92 0.04 295)",
+                            fontSize: "1rem",
+                            fontWeight: 700,
+                            marginBottom: "2px",
+                          }}
+                        >
+                          {app.title}
+                        </h3>
+                        <span
+                          style={{
+                            background:
+                              app.type === "game"
+                                ? "oklch(0.42 0.24 295 / 0.3)"
+                                : "oklch(0.42 0.24 200 / 0.3)",
+                            color:
+                              app.type === "game"
+                                ? "oklch(0.72 0.22 295)"
+                                : "oklch(0.72 0.22 200)",
+                            border: `1px solid ${app.type === "game" ? "oklch(0.72 0.22 295 / 0.4)" : "oklch(0.72 0.22 200 / 0.4)"}`,
+                            borderRadius: "20px",
+                            padding: "2px 10px",
+                            fontSize: "0.72rem",
+                            fontWeight: 600,
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {app.type}
+                        </span>
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: "oklch(0.50 0.08 295)",
+                          fontSize: "0.78rem",
+                        }}
+                      >
+                        📅 {app.publishedAt}
+                      </span>
+                      <span
+                        style={{
+                          background: "oklch(0.72 0.22 200 / 0.15)",
+                          border: "1px solid oklch(0.72 0.22 200 / 0.4)",
+                          borderRadius: "20px",
+                          padding: "2px 10px",
+                          color: "oklch(0.72 0.22 200)",
+                          fontSize: "0.78rem",
+                          fontWeight: 600,
+                        }}
+                      >
+                        👁 {app.views} views
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handlePlay(app)}
+                      style={{
+                        background:
+                          "linear-gradient(135deg, oklch(0.52 0.25 295), oklch(0.52 0.25 250))",
+                        border: "none",
+                        borderRadius: "10px",
+                        color: "#fff",
+                        padding: "10px",
+                        cursor: "pointer",
+                        fontSize: "0.9rem",
+                        fontWeight: 700,
+                        boxShadow: "0 0 16px oklch(0.52 0.25 295 / 0.4)",
+                        transition: "all 0.15s",
+                      }}
+                    >
+                      {app.type === "game" ? "▶ Play Game" : "🔗 Open App"}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Play Modal */}
+      {playModal && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "oklch(0.05 0.04 295 / 0.97)",
+            zIndex: 1000,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <div
+            style={{
+              background: "oklch(0.10 0.05 295)",
+              borderBottom: "1px solid oklch(0.72 0.22 295 / 0.3)",
+              padding: "12px 20px",
+              display: "flex",
+              alignItems: "center",
+              gap: "14px",
+            }}
+          >
+            <span style={{ fontSize: "1.5rem" }}>
+              {playModal.type === "game" ? "🎮" : "📱"}
+            </span>
+            <h2
+              style={{
+                color: "oklch(0.92 0.04 295)",
+                fontSize: "1.1rem",
+                fontWeight: 700,
+              }}
+            >
+              {playModal.title}
+            </h2>
+            <span
+              style={{
+                marginLeft: "auto",
+                color: "oklch(0.60 0.08 295)",
+                fontSize: "0.8rem",
+              }}
+            >
+              👁 {playModal.views} views
+            </span>
+            <button
+              type="button"
+              onClick={() => setPlayModal(null)}
+              style={{
+                background: "oklch(0.25 0.10 15)",
+                border: "1px solid oklch(0.55 0.22 15)",
+                borderRadius: "8px",
+                color: "oklch(0.85 0.20 15)",
+                padding: "6px 14px",
+                cursor: "pointer",
+                fontWeight: 700,
+                fontSize: "0.9rem",
+              }}
+            >
+              ✕ Close
+            </button>
+          </div>
+          <iframe
+            title={playModal.title}
+            srcDoc={playModal.code}
+            sandbox="allow-scripts"
+            style={{
+              flex: 1,
+              border: "none",
+              background: "#000",
+              width: "100%",
+              height: "100%",
+            }}
+          />
+        </div>
+      )}
+
+      {/* Messages — only shown in studio tab */}
+      {activeTab === "studio" && (
+        <main
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            padding: "20px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          {messages.map((msg) => (
+            <div
+              key={msg.id}
+              style={{
+                display: "flex",
+                justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
+                gap: "10px",
+                alignItems: "flex-start",
+              }}
+            >
+              {msg.role === "ai" && (
+                <img
+                  src="/assets/generated/ape-ai-logo-transparent.dim_200x200.png"
+                  alt="APE AI"
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    objectFit: "contain",
+                    filter: "drop-shadow(0 0 6px oklch(0.72 0.22 295))",
+                    flexShrink: 0,
+                    marginTop: "4px",
+                  }}
+                />
+              )}
+              <div
+                style={{
+                  maxWidth:
+                    msg.demoType === "iframe"
+                      ? "720px"
+                      : msg.demoType
+                        ? "480px"
+                        : "72%",
+                  background:
+                    msg.role === "user"
+                      ? "linear-gradient(135deg, oklch(0.42 0.24 295), oklch(0.52 0.25 280))"
+                      : "oklch(0.12 0.04 295)",
+                  border:
+                    msg.role === "ai"
+                      ? "1px solid oklch(0.72 0.22 295 / 0.35)"
+                      : "none",
+                  borderRadius:
+                    msg.role === "user"
+                      ? "20px 20px 4px 20px"
+                      : "4px 20px 20px 20px",
+                  padding: "14px 18px",
+                  boxShadow:
+                    msg.role === "ai"
+                      ? "0 0 20px oklch(0.72 0.22 295 / 0.15)"
+                      : "0 4px 16px oklch(0.42 0.24 295 / 0.4)",
+                  color: "oklch(0.92 0.04 295)",
+                  fontSize: "0.88rem",
+                }}
+              >
+                <FormattedText text={msg.text} />
+                {msg.demoType === "iframe" && msg.code && (
+                  <div style={{ marginTop: "14px" }}>
+                    <p
+                      style={{
+                        color: "oklch(0.72 0.22 295)",
+                        fontSize: "11px",
+                        marginBottom: "8px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      ▶ LIVE DEMO
+                    </p>
+                    <iframe
+                      title="APE AI Live Demo"
+                      srcDoc={msg.code}
+                      sandbox="allow-scripts"
+                      style={{
+                        width: "100%",
+                        height: "420px",
+                        border: "2px solid oklch(0.72 0.22 295 / 0.5)",
+                        borderRadius: "10px",
+                        background: "#000",
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handlePublish(msg)}
+                      style={{
+                        marginTop: "10px",
+                        width: "100%",
+                        background:
+                          "linear-gradient(135deg, oklch(0.42 0.24 295), oklch(0.42 0.24 250))",
+                        border: "1px solid oklch(0.72 0.22 295 / 0.5)",
+                        borderRadius: "10px",
+                        color: "#fff",
+                        padding: "10px",
+                        cursor: "pointer",
+                        fontSize: "0.88rem",
+                        fontWeight: 700,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      🚀 Publish This App
+                    </button>
+                    <CodeBlock code={msg.code} language={msg.language} />
+                  </div>
+                )}
+                {!msg.demoType && msg.code && (
+                  <CodeBlock code={msg.code} language={msg.language} />
+                )}
+                {msg.demoType === "snake" && (
+                  <div style={{ marginTop: "14px" }}>
+                    <p
+                      style={{
+                        color: "oklch(0.72 0.22 295)",
+                        fontSize: "11px",
+                        marginBottom: "8px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      ▶ LIVE DEMO — Arrow keys to play
+                    </p>
+                    <SnakeDemo />
+                  </div>
+                )}
+                {msg.demoType === "pong" && (
+                  <div style={{ marginTop: "14px" }}>
+                    <p
+                      style={{
+                        color: "oklch(0.72 0.22 295)",
+                        fontSize: "11px",
+                        marginBottom: "8px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      ▶ LIVE DEMO — W/S and ↑↓ keys
+                    </p>
+                    <PongDemo />
+                  </div>
+                )}
+                {msg.demoType === "breakout" && (
+                  <div style={{ marginTop: "14px" }}>
+                    <p
+                      style={{
+                        color: "oklch(0.72 0.22 295)",
+                        fontSize: "11px",
+                        marginBottom: "8px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      ▶ LIVE DEMO — ←/→ keys
+                    </p>
+                    <BreakoutDemo />
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+          {isTyping && (
+            <div
+              style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}
+              data-ocid="apeai.loading_state"
+            >
               <img
                 src="/assets/generated/ape-ai-logo-transparent.dim_200x200.png"
-                alt="APE AI"
+                alt="APE AI thinking"
                 style={{
                   width: "32px",
                   height: "32px",
                   objectFit: "contain",
                   filter: "drop-shadow(0 0 6px oklch(0.72 0.22 295))",
                   flexShrink: 0,
-                  marginTop: "4px",
                 }}
               />
-            )}
-            <div
-              style={{
-                maxWidth:
-                  msg.demoType === "iframe"
-                    ? "720px"
-                    : msg.demoType
-                      ? "480px"
-                      : "72%",
-                background:
-                  msg.role === "user"
-                    ? "linear-gradient(135deg, oklch(0.42 0.24 295), oklch(0.52 0.25 280))"
-                    : "oklch(0.12 0.04 295)",
-                border:
-                  msg.role === "ai"
-                    ? "1px solid oklch(0.72 0.22 295 / 0.35)"
-                    : "none",
-                borderRadius:
-                  msg.role === "user"
-                    ? "20px 20px 4px 20px"
-                    : "4px 20px 20px 20px",
-                padding: "14px 18px",
-                boxShadow:
-                  msg.role === "ai"
-                    ? "0 0 20px oklch(0.72 0.22 295 / 0.15)"
-                    : "0 4px 16px oklch(0.42 0.24 295 / 0.4)",
-                color: "oklch(0.92 0.04 295)",
-                fontSize: "0.88rem",
-              }}
-            >
-              <FormattedText text={msg.text} />
-              {msg.demoType === "iframe" && msg.code && (
-                <div style={{ marginTop: "14px" }}>
-                  <p
-                    style={{
-                      color: "oklch(0.72 0.22 295)",
-                      fontSize: "11px",
-                      marginBottom: "8px",
-                      fontWeight: 600,
-                    }}
-                  >
-                    ▶ LIVE DEMO
-                  </p>
-                  <iframe
-                    title="APE AI Live Demo"
-                    srcDoc={msg.code}
-                    sandbox="allow-scripts"
-                    style={{
-                      width: "100%",
-                      height: "420px",
-                      border: "2px solid oklch(0.72 0.22 295 / 0.5)",
-                      borderRadius: "10px",
-                      background: "#000",
-                    }}
-                  />
-                  <CodeBlock code={msg.code} language={msg.language} />
-                </div>
-              )}
-              {!msg.demoType && msg.code && (
-                <CodeBlock code={msg.code} language={msg.language} />
-              )}
-              {msg.demoType === "snake" && (
-                <div style={{ marginTop: "14px" }}>
-                  <p
-                    style={{
-                      color: "oklch(0.72 0.22 295)",
-                      fontSize: "11px",
-                      marginBottom: "8px",
-                      fontWeight: 600,
-                    }}
-                  >
-                    ▶ LIVE DEMO — Arrow keys to play
-                  </p>
-                  <SnakeDemo />
-                </div>
-              )}
-              {msg.demoType === "pong" && (
-                <div style={{ marginTop: "14px" }}>
-                  <p
-                    style={{
-                      color: "oklch(0.72 0.22 295)",
-                      fontSize: "11px",
-                      marginBottom: "8px",
-                      fontWeight: 600,
-                    }}
-                  >
-                    ▶ LIVE DEMO — W/S and ↑↓ keys
-                  </p>
-                  <PongDemo />
-                </div>
-              )}
-              {msg.demoType === "breakout" && (
-                <div style={{ marginTop: "14px" }}>
-                  <p
-                    style={{
-                      color: "oklch(0.72 0.22 295)",
-                      fontSize: "11px",
-                      marginBottom: "8px",
-                      fontWeight: 600,
-                    }}
-                  >
-                    ▶ LIVE DEMO — ←/→ keys
-                  </p>
-                  <BreakoutDemo />
-                </div>
-              )}
+              <div
+                style={{
+                  background: "oklch(0.12 0.04 295)",
+                  border: "1px solid oklch(0.72 0.22 295 / 0.35)",
+                  borderRadius: "4px 20px 20px 20px",
+                  padding: "14px 18px",
+                }}
+              >
+                <TypingDots />
+              </div>
             </div>
-          </div>
-        ))}
-        {isTyping && (
-          <div
-            style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}
-            data-ocid="apeai.loading_state"
-          >
-            <img
-              src="/assets/generated/ape-ai-logo-transparent.dim_200x200.png"
-              alt="APE AI thinking"
-              style={{
-                width: "32px",
-                height: "32px",
-                objectFit: "contain",
-                filter: "drop-shadow(0 0 6px oklch(0.72 0.22 295))",
-                flexShrink: 0,
-              }}
-            />
-            <div
-              style={{
-                background: "oklch(0.12 0.04 295)",
-                border: "1px solid oklch(0.72 0.22 295 / 0.35)",
-                borderRadius: "4px 20px 20px 20px",
-                padding: "14px 18px",
-              }}
-            >
-              <TypingDots />
-            </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </main>
+          )}
+          <div ref={messagesEndRef} />
+        </main>
+      )}
 
       {/* Input */}
-      <div
-        style={{
-          background: "oklch(0.10 0.05 295 / 0.95)",
-          backdropFilter: "blur(20px)",
-          borderTop: "1px solid oklch(0.72 0.22 295 / 0.25)",
-          padding: "16px 20px 20px",
-        }}
-      >
+      {activeTab === "studio" && (
         <div
           style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "8px",
-            marginBottom: "12px",
+            background: "oklch(0.10 0.05 295 / 0.95)",
+            backdropFilter: "blur(20px)",
+            borderTop: "1px solid oklch(0.72 0.22 295 / 0.25)",
+            padding: "16px 20px 20px",
           }}
         >
-          {QUICK_PROMPTS.map((prompt) => (
-            <button
-              key={prompt}
-              type="button"
-              data-ocid="apeai.toggle"
-              className="ape-chip"
-              onClick={() => sendMessage(prompt)}
-              disabled={isTyping}
-              style={{
-                background: "oklch(0.72 0.22 295 / 0.12)",
-                border: "1px solid oklch(0.72 0.22 295 / 0.4)",
-                borderRadius: "20px",
-                color: "oklch(0.72 0.22 295)",
-                padding: "5px 14px",
-                fontSize: "0.78rem",
-                cursor: "pointer",
-                fontWeight: 600,
-                transition: "all 0.15s ease",
-                opacity: isTyping ? 0.4 : 1,
-              }}
-            >
-              {prompt}
-            </button>
-          ))}
-        </div>
-        <div style={{ display: "flex", gap: "10px", alignItems: "flex-end" }}>
-          <textarea
-            data-ocid="apeai.textarea"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage(input);
-              }
-            }}
-            placeholder="Describe anything to build — apps, games, tools, websites..."
-            rows={2}
+          <div
             style={{
-              flex: 1,
-              background: "oklch(0.14 0.05 295)",
-              border: "1px solid oklch(0.72 0.22 295 / 0.35)",
-              borderRadius: "12px",
-              color: "oklch(0.92 0.04 295)",
-              padding: "12px 16px",
-              fontSize: "0.88rem",
-              resize: "none",
-              outline: "none",
-              fontFamily: "inherit",
-              lineHeight: 1.5,
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = "oklch(0.72 0.22 295 / 0.7)";
-              e.target.style.boxShadow = "0 0 16px oklch(0.72 0.22 295 / 0.2)";
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = "oklch(0.72 0.22 295 / 0.35)";
-              e.target.style.boxShadow = "none";
-            }}
-          />
-          <button
-            type="button"
-            data-ocid="apeai.submit_button"
-            className="ape-send"
-            onClick={() => sendMessage(input)}
-            disabled={!input.trim() || isTyping}
-            style={{
-              background: "oklch(0.52 0.25 295)",
-              border: "none",
-              borderRadius: "12px",
-              color: "#fff",
-              padding: "12px 20px",
-              fontSize: "1.2rem",
-              cursor: !input.trim() || isTyping ? "not-allowed" : "pointer",
-              opacity: !input.trim() || isTyping ? 0.4 : 1,
-              transition: "all 0.15s ease",
-              boxShadow: "0 0 16px oklch(0.52 0.25 295 / 0.4)",
-              flexShrink: 0,
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "8px",
+              marginBottom: "12px",
             }}
           >
-            🚀
-          </button>
+            {QUICK_PROMPTS.map((prompt) => (
+              <button
+                key={prompt}
+                type="button"
+                data-ocid="apeai.toggle"
+                className="ape-chip"
+                onClick={() => sendMessage(prompt)}
+                disabled={isTyping}
+                style={{
+                  background: "oklch(0.72 0.22 295 / 0.12)",
+                  border: "1px solid oklch(0.72 0.22 295 / 0.4)",
+                  borderRadius: "20px",
+                  color: "oklch(0.72 0.22 295)",
+                  padding: "5px 14px",
+                  fontSize: "0.78rem",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                  transition: "all 0.15s ease",
+                  opacity: isTyping ? 0.4 : 1,
+                }}
+              >
+                {prompt}
+              </button>
+            ))}
+          </div>
+          <div style={{ display: "flex", gap: "10px", alignItems: "flex-end" }}>
+            <textarea
+              data-ocid="apeai.textarea"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  sendMessage(input);
+                }
+              }}
+              placeholder="Describe anything to build — apps, games, tools, websites..."
+              rows={2}
+              style={{
+                flex: 1,
+                background: "oklch(0.14 0.05 295)",
+                border: "1px solid oklch(0.72 0.22 295 / 0.35)",
+                borderRadius: "12px",
+                color: "oklch(0.92 0.04 295)",
+                padding: "12px 16px",
+                fontSize: "0.88rem",
+                resize: "none",
+                outline: "none",
+                fontFamily: "inherit",
+                lineHeight: 1.5,
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = "oklch(0.72 0.22 295 / 0.7)";
+                e.target.style.boxShadow =
+                  "0 0 16px oklch(0.72 0.22 295 / 0.2)";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "oklch(0.72 0.22 295 / 0.35)";
+                e.target.style.boxShadow = "none";
+              }}
+            />
+            <button
+              type="button"
+              data-ocid="apeai.submit_button"
+              className="ape-send"
+              onClick={() => sendMessage(input)}
+              disabled={!input.trim() || isTyping}
+              style={{
+                background: "oklch(0.52 0.25 295)",
+                border: "none",
+                borderRadius: "12px",
+                color: "#fff",
+                padding: "12px 20px",
+                fontSize: "1.2rem",
+                cursor: !input.trim() || isTyping ? "not-allowed" : "pointer",
+                opacity: !input.trim() || isTyping ? 0.4 : 1,
+                transition: "all 0.15s ease",
+                boxShadow: "0 0 16px oklch(0.52 0.25 295 / 0.4)",
+                flexShrink: 0,
+              }}
+            >
+              🚀
+            </button>
+          </div>
+          <p
+            style={{
+              color: "oklch(0.45 0.08 295)",
+              fontSize: "0.72rem",
+              marginTop: "8px",
+              textAlign: "center",
+            }}
+          >
+            Enter to send · Shift+Enter for newline · Try the quick prompts
+            above
+          </p>
         </div>
-        <p
-          style={{
-            color: "oklch(0.45 0.08 295)",
-            fontSize: "0.72rem",
-            marginTop: "8px",
-            textAlign: "center",
-          }}
-        >
-          Enter to send · Shift+Enter for newline · Try the quick prompts above
-        </p>
-      </div>
+      )}
     </div>
   );
 }
